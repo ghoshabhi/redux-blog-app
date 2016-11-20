@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { reduxForm } from 'redux-form';
 import { createPost } from '../actions/index';
 import { Link } from 'react-router';
@@ -10,6 +10,17 @@ export const formFields = [
 ];
 
 class PostNew extends Component {
+
+  onSubmit(props) {
+    this.props.createPost(props)
+      .then(() => {
+        this.context.router.push('/');
+      })
+      .catch(err => {
+        console.error("Error occurred!");
+      });
+  }
+
   render() {
     const {
       fields: {title,categories,content},
@@ -17,7 +28,7 @@ class PostNew extends Component {
     } = this.props;
 
     return (
-      <form onSubmit={handleSubmit(this.props.createPost)}>
+      <form onSubmit={handleSubmit(this.onSubmit.bind(this))}>
         <h3>Create A New Post</h3>
 
         <div className={`form-group ${title.touched && title.invalid ? 'has-danger': ''}`}>
@@ -53,6 +64,10 @@ class PostNew extends Component {
   }
 }
 
+PostNew.contextTypes = {
+  router: PropTypes.object.isRequired,
+};
+
 function validate(values) {
   const error = {};
 
@@ -77,5 +92,5 @@ function validate(values) {
 export default reduxForm({
   form: 'NewPost',
   fields: formFields,
-  validate
+  validate //validate: validate
 }, null, { createPost })(PostNew);
