@@ -8,6 +8,7 @@ const API_KEY = '?key=Ajsdno2fm$mkadlaksd';
 
 export function fetchPosts() {
   const request = axios.get(`${root_url}/posts${API_KEY}`);
+  console.log("Inisde fetchPosts action", request);
   return {
     type: FETCH_POSTS,
     payload: request
